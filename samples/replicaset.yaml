@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  labels:
+    app: championships
+    interface: rest
+    language: golang
+    pod-template-hash: 566c8d6587
+    stack: echo
+    version: v1
+  name: championships-566c8d6587
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: championships
+  template:
+    metadata:
+      labels:
+        app: championships
+        interface: rest
+        language: golang
+        pod-template-hash: 566c8d6587
+        stack: echo
+        version: v1
+    spec:
+      containers:
+        - image: gcr.io/mvp-mesh-pre-testing/championship:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 9999
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: championships
+          ports:
+            - containerPort: 9999
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 9999
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 100m
+              memory: 10Mi
+            requests:
+              cpu: 50m
+              memory: 5Mi
